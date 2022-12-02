@@ -1,12 +1,17 @@
 from rest_framework import serializers
-from watchlist_app.models import WatchList, StreamPlatform
+from watchlist_app.models import WatchList, StreamPlatform, Review
 
 # def name_length(value):
 #     if len(value) < 2:
 #         raise serializers.ValidationError('Movie name is too short')
 
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = '__all__'
+
 class WatchListSerializer(serializers.ModelSerializer):
-    len_name = serializers.SerializerMethodField()
+    reviews = ReviewSerializer(many = True, read_only = True)
 
     class Meta:
         model = WatchList
@@ -30,31 +35,13 @@ class WatchListSerializer(serializers.ModelSerializer):
             return value
 
 class StreamPlatformSerializer(serializers.ModelSerializer):
-    # return all data in watchlist records
-    # watchlist = WatchListSerializer(many = True, read_only = True)
-
-    # return the value we are use it in __str__ method, here is (name)
-    # watchlist = serializers.StringRelatedField(many = True)
-
-    # return primary key
-    # watchlist = serializers.PrimaryKeyRelatedField(many = True, read_only = True)
-
-    # return hyperlink for each record
-    # watchlist = serializers.HyperlinkedRelatedField(
-    #     many = True,
-    #     read_only = True,
-    #     view_name = 'watch_list_details_view'
-    #     )
+    watchlist = WatchListSerializer(many = True, read_only = True)
 
     class Meta:
         model = StreamPlatform
         fields = '__all__'
         # fields = ['id', 'name']
         # exclude = ['active']
-
-    class Meta:
-        model = StreamPlatform
-        fields = '__all__'
 
     # id = serializers.IntegerField(read_only = True)
     # name = serializers.CharField(validators = [name_length])

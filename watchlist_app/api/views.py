@@ -1,8 +1,31 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import status
-from watchlist_app.models import WatchList, StreamPlatform
-from .serializers import WatchListSerializer, StreamPlatformSerializer
+from rest_framework.generics import GenericAPIView
+from rest_framework import status, mixins
+from watchlist_app.models import WatchList, StreamPlatform, Review
+from .serializers import WatchListSerializer, StreamPlatformSerializer, ReviewSerializer
+
+class ReviewList(mixins.ListModelMixin,
+                 mixins.CreateModelMixin,
+                 GenericAPIView):
+    serializer_class = ReviewSerializer
+    queryset = Review.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+class ReviewDetails(mixins.RetrieveModelMixin,
+                    # mixins.UpdateModelMixin,
+                    # mixins.DestroyModelMixin,
+                    GenericAPIView):
+    serializer_class = ReviewSerializer
+    queryset = Review.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
 
 class StreamPlatformView(APIView):
     def get(self, request, format = None):
@@ -23,7 +46,7 @@ class StreamPlatformDetailsView(APIView):
     def get(self, request, pk = None):
         try:
             streamPlatform = StreamPlatform.objects.get(pk = pk)
-            serializer = StreamPlatformSerializer(streamPlatform)
+            serializer = StreamPlatformSerializer(streamPlatform, context={'request': request})
             return Response(serializer.data, status = status.HTTP_200_OK)
         except StreamPlatform.DoesNotExist:
             return Response({"ERROR":"STREAM PLATFORM NOT FOUND"}, status = status.HTTP_404_NOT_FOUND)
