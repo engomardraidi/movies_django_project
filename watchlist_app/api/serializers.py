@@ -5,11 +5,6 @@ from watchlist_app.models import WatchList, StreamPlatform
 #     if len(value) < 2:
 #         raise serializers.ValidationError('Movie name is too short')
 
-class StreamPlatformSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = StreamPlatform
-        fields = '__all__'
-
 class WatchListSerializer(serializers.ModelSerializer):
     len_name = serializers.SerializerMethodField()
 
@@ -33,6 +28,13 @@ class WatchListSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Movie name is too short")
         else:
             return value
+
+class StreamPlatformSerializer(serializers.ModelSerializer):
+    watchlist = WatchListSerializer(many = True, read_only = True)
+
+    class Meta:
+        model = StreamPlatform
+        fields = '__all__'
 
     # id = serializers.IntegerField(read_only = True)
     # name = serializers.CharField(validators = [name_length])
