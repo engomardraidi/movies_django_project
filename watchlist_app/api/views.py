@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 # from rest_framework.generics import GenericAPIView
 # from rest_framework import mixins
 from rest_framework import status, generics
-from rest_framework.viewsets import ViewSet
+from rest_framework import viewsets
 from watchlist_app.models import WatchList, StreamPlatform, Review
 from .serializers import WatchListSerializer, StreamPlatformSerializer, ReviewSerializer
 
@@ -51,17 +51,29 @@ class ReviewCreate(generics.CreateAPIView):
 #     def get(self, request, *args, **kwargs):
 #         return self.retrieve(request, *args, **kwargs)
 
-class StreamPlatformVS(ViewSet):
-    def list(self, request):
-        queryset = StreamPlatform.objects.all()
-        serializer = StreamPlatformSerializer(queryset, many=True)
-        return Response(serializer.data, status = status.HTTP_200_OK)
+class StreamPlatformVS(viewsets.ReadOnlyModelViewSet):
+    queryset = StreamPlatform.objects.all()
+    serializer_class = StreamPlatformSerializer
 
-    def retrieve(self, request, pk = None):
-        queryset = StreamPlatform.objects.all()
-        watchlist = get_object_or_404(queryset, pk = pk)
-        serializer = StreamPlatformSerializer(watchlist)
-        return Response(serializer.data, status = status.HTTP_200_OK)
+# class StreamPlatformVS(ViewSet):
+#     def list(self, request):
+#         queryset = StreamPlatform.objects.all()
+#         serializer = StreamPlatformSerializer(queryset, many=True)
+#         return Response(serializer.data, status = status.HTTP_200_OK)
+
+#     def retrieve(self, request, pk = None):
+#         queryset = StreamPlatform.objects.all()
+#         watchlist = get_object_or_404(queryset, pk = pk)
+#         serializer = StreamPlatformSerializer(watchlist)
+#         return Response(serializer.data, status = status.HTTP_200_OK)
+
+#     def create(self, request):
+#         serializer = StreamPlatformSerializer(data = request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status = status.HTTP_201_CREATED)
+#         else:
+#             return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
 # class StreamPlatformView(APIView):
 #     def get(self, request, format = None):
