@@ -30,7 +30,27 @@ class WatchListSerializer(serializers.ModelSerializer):
             return value
 
 class StreamPlatformSerializer(serializers.ModelSerializer):
-    watchlist = WatchListSerializer(many = True, read_only = True)
+    # return all data in watchlist records
+    # watchlist = WatchListSerializer(many = True, read_only = True)
+
+    # return the value we are use it in __str__ method, here is (name)
+    # watchlist = serializers.StringRelatedField(many = True)
+
+    # return primary key
+    # watchlist = serializers.PrimaryKeyRelatedField(many = True, read_only = True)
+
+    # return hyperlink for each record
+    # watchlist = serializers.HyperlinkedRelatedField(
+    #     many = True,
+    #     read_only = True,
+    #     view_name = 'watch_list_details_view'
+    #     )
+
+    class Meta:
+        model = StreamPlatform
+        fields = '__all__'
+        # fields = ['id', 'name']
+        # exclude = ['active']
 
     class Meta:
         model = StreamPlatform

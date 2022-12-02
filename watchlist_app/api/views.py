@@ -7,7 +7,7 @@ from .serializers import WatchListSerializer, StreamPlatformSerializer
 class StreamPlatformView(APIView):
     def get(self, request, format = None):
         streamPlatform = StreamPlatform.objects.all()
-        serializer = StreamPlatformSerializer(streamPlatform, many = True)
+        serializer = StreamPlatformSerializer(streamPlatform, many = True, context = {'request': request})
         return Response(serializer.data, status = status.HTTP_200_OK)
 
     def post(self, request, format = None):
