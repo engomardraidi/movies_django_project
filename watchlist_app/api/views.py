@@ -36,11 +36,25 @@ class ReviewCreate(generics.CreateAPIView):
         movie = WatchList.objects.get(pk=pk)
 
         review_user = self.request.user
+
+        if not review_user.is_authenticated:
+            raise ValidationError('You must login')
+
         review_queryset = Review.objects.filter(watchlist = movie, review_user = review_user)
+
 
         if review_queryset.exists():
             raise ValidationError('You have already reviewed this model')
-        serializer.save(watchlist = movie)
+
+        if movie.number_rating == 0:
+            movie.avg_rating = serializer.validated_data['rating']
+        else:
+            movie.avg_rating = (movie.avg_rating + serializer.validated_data['rating']) / 2
+
+        movie.number_rating += 1
+        movie.save()
+
+        serializer.save(watchlist = movie, review_user = review_user)
 
 # class ReviewList(mixins.ListModelMixin,
 #                  mixins.CreateModelMixin,
