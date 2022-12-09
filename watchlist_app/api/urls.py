@@ -13,7 +13,7 @@ urlpatterns = [
     # path('stream/<int:pk>', views.StreamPlatformDetailsView.as_view(), name = 'stream_platform_details_view'),
     path('<int:pk>/review-create/', views.ReviewCreate.as_view(), name = 'stream_platform_review_create_view'),
     path('<int:pk>/reviews/', views.ReviewList.as_view(), name = 'stream_platform_review_view'),
-    path('review/<int:pk>', views.ReviewDetails.as_view(), name = 'review_details_view'),
+    path('review/<int:pk>/', views.ReviewDetails.as_view(), name = 'review_details_view'),
     # path('review/', views.ReviewList.as_view(), name = 'review_list_view'),
     # path('review/<int:pk>', views.ReviewDetails.as_view(), name = 'review_details_view'),
 ]
