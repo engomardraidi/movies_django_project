@@ -12,7 +12,7 @@ class IsAdminOrReadOnly(permissions.IsAdminUser):
             # Check permissions for write request
             return bool(request.user and request.user.is_staff)
 
-class ReviewUserOrReadOnly(permissions.BasePermission):
+class IsReviewUserOrReadOnly(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
@@ -20,4 +20,4 @@ class ReviewUserOrReadOnly(permissions.BasePermission):
             return True
         else:
             # Check permissions for write request
-            return obj.review_user == request.user
+            return obj.review_user == request.user # we can add (... or request.user.is_staff) to allow admin update or delete users reviews

@@ -6,15 +6,14 @@ from rest_framework.views import APIView
 # from rest_framework import mixins
 from rest_framework import status, generics
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
-from .permissions import ReviewUserOrReadOnly
+from rest_framework.permissions import IsAuthenticated
+from .permissions import IsReviewUserOrReadOnly, IsAdminOrReadOnly
 from watchlist_app.models import WatchList, StreamPlatform, Review
 from .serializers import WatchListSerializer, StreamPlatformSerializer, ReviewSerializer
 
 class ReviewList(generics.ListAPIView):
     # queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         pk = self.kwargs['pk']
@@ -23,10 +22,11 @@ class ReviewList(generics.ListAPIView):
 class ReviewDetails(generics.RetrieveUpdateDestroyAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [ReviewUserOrReadOnly]
+    permission_classes = [IsReviewUserOrReadOnly]
 
 class ReviewCreate(generics.CreateAPIView):
     serializer_class = ReviewSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return Review.objects.all()
@@ -78,9 +78,10 @@ class ReviewCreate(generics.CreateAPIView):
 #     def get(self, request, *args, **kwargs):
 #         return self.retrieve(request, *args, **kwargs)
 
-class StreamPlatformVS(viewsets.ReadOnlyModelViewSet):
+class StreamPlatformVS(viewsets.ModelViewSet):
     queryset = StreamPlatform.objects.all()
     serializer_class = StreamPlatformSerializer
+    permission_classes = [IsAdminOrReadOnly]
 
 # class StreamPlatformVS(ViewSet):
 #     def list(self, request):
@@ -118,6 +119,8 @@ class StreamPlatformVS(viewsets.ReadOnlyModelViewSet):
 #             return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
 class StreamPlatformDetailsView(APIView):
+    permission_classes = [IsAdminOrReadOnly]
+
     def get(self, request, pk = None):
         try:
             streamPlatform = StreamPlatform.objects.get(pk = pk)
@@ -145,6 +148,8 @@ class StreamPlatformDetailsView(APIView):
             return Response({"ERROR":"STREAM PLATFORM NOT FOUND"}, status = status.HTTP_404_NOT_FOUND)
 
 class WatchListView(APIView):
+    permission_classes = [IsAdminOrReadOnly]
+
     def get(self, request, format = None):
         watchList = WatchList.objects.all()
         serializer = WatchListSerializer(watchList, many = True)
@@ -160,6 +165,8 @@ class WatchListView(APIView):
             return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
 class WatchListDetailView(APIView):
+    permission_classes = [IsAdminOrReadOnly]
+
     def get(self, request, pk = None):
         try:
             watchList = WatchList.objects.get(id = pk)
