@@ -1,6 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
+# from rest_framework.authtoken.models import Token
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
 from .serializers import RegistrationSerializer
 
@@ -21,8 +22,13 @@ def registration_view(request):
                 'username': user.username,
                 'email': user.email
             }
-            token = Token.objects.get(user = user).key
-            data['token'] = token
+            # token = Token.objects.get(user = user).key
+            # data['token'] = token
+            refresh_token = RefreshToken.for_user(user)
+            data['token'] = {
+                'refresh': str(refresh_token),
+                'access': str(refresh_token.access_token),
+            }
 
             return Response(data, status = status.HTTP_201_CREATED)
         else:
