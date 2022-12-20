@@ -165,7 +165,7 @@ class StreamPlatformDetailsView(APIView):
         except StreamPlatform.DoesNotExist:
             return Response({"ERROR":"STREAM PLATFORM NOT FOUND"}, status = status.HTTP_404_NOT_FOUND)
 
-class WatchListTest(generics.ListAPIView):
+class WatchListGV(generics.ListAPIView):
     queryset = WatchList.objects.all()
     serializer_class = WatchListSerializer
     # filter_backends = [filters.SearchFilter]

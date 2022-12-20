@@ -16,7 +16,7 @@ urlpatterns = [
     path('review/<int:pk>/', views.ReviewDetails.as_view(), name = 'review-details-view'),
     path('reviews/', views.UserReview.as_view(), name = 'user-review'),
     path('reviews/', views.UserReview.as_view(), name = 'user-review'),
-    path('list2/', views.WatchListTest.as_view(), name = 'list-2'),
+    path('list2/', views.WatchListGV.as_view(), name = 'list-2'),
     # path('review/', views.ReviewList.as_view(), name = 'review-list-view'),
     # path('review/<int:pk>', views.ReviewDetails.as_view(), name = 'review-details-view'),
 ]
