@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'watchlist_app.apps.WatchlistAppConfig',
     'user_app.apps.UserAppConfig',
     'rest_framework',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    'django_filters'
 ]
 
 MIDDLEWARE = [
@@ -147,6 +148,9 @@ REST_FRAMEWORK = {
         'review-details': '2/day',
         'review-list': '10/day'
     },
+    # 'DEFAULT_FILTER_BACKENDS': [
+    #     'django_filters.rest_framework.DjangoFilterBackend'
+    # ]
 }
 
 SIMPLE_JWT = {

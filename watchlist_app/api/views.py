@@ -5,19 +5,31 @@ from rest_framework.views import APIView
 from rest_framework.throttling import AnonRateThrottle
 # from rest_framework.generics import GenericAPIView
 # from rest_framework import mixins
-from rest_framework import status, generics
-from rest_framework import viewsets
+from rest_framework import status, generics, viewsets, filters
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsReviewUserOrReadOnly, IsAdminOrReadOnly
 from watchlist_app.models import WatchList, StreamPlatform, Review
 from .serializers import WatchListSerializer, StreamPlatformSerializer, ReviewSerializer
-from .throttling import ReviewCreateThrottle, ReviewListThrottle, ReviewDetailsThrottle
+from .throttling import ReviewCreateThrottle, ReviewDetailsThrottle
+
+class UserReview(generics.ListAPIView):
+    serializer_class = ReviewSerializer
+
+    # def get_queryset(self):
+    #     username = self.kwargs['username']
+    #     return Review.objects.filter(review_user__username = username)
+    def get_queryset(self):
+        username = self.request.query_params.get('username', None)
+        return Review.objects.filter(review_user__username = username)
 
 class ReviewList(generics.ListAPIView):
     # queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated]
-    throttle_classes = [ReviewListThrottle, AnonRateThrottle]
+    # permission_classes = [IsAuthenticated]
+    # throttle_classes = [ReviewListThrottle, AnonRateThrottle]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['review_user__username', 'active']
 
     def get_queryset(self):
         pk = self.kwargs['pk']
@@ -152,6 +164,14 @@ class StreamPlatformDetailsView(APIView):
             return Response(status = status.HTTP_204_NO_CONTENT)
         except StreamPlatform.DoesNotExist:
             return Response({"ERROR":"STREAM PLATFORM NOT FOUND"}, status = status.HTTP_404_NOT_FOUND)
+
+class WatchListTest(generics.ListAPIView):
+    queryset = WatchList.objects.all()
+    serializer_class = WatchListSerializer
+    # filter_backends = [filters.SearchFilter]
+    # search_fields = ['title', 'platform__name']
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['avg_rating']
 
 class WatchListView(APIView):
     permission_classes = [IsAdminOrReadOnly]
