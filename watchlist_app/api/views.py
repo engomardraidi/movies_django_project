@@ -12,6 +12,7 @@ from .permissions import IsReviewUserOrReadOnly, IsAdminOrReadOnly
 from watchlist_app.models import WatchList, StreamPlatform, Review
 from .serializers import WatchListSerializer, StreamPlatformSerializer, ReviewSerializer
 from .throttling import ReviewCreateThrottle, ReviewDetailsThrottle
+from .pagination import WatchListPagination
 
 class UserReview(generics.ListAPIView):
     serializer_class = ReviewSerializer
@@ -168,10 +169,11 @@ class StreamPlatformDetailsView(APIView):
 class WatchListGV(generics.ListAPIView):
     queryset = WatchList.objects.all()
     serializer_class = WatchListSerializer
-    # filter_backends = [filters.SearchFilter]
-    # search_fields = ['title', 'platform__name']
+    pagination_class = WatchListPagination
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ['avg_rating']
+    # filter_backends = [filters.SearchFilter]
+    # search_fields = ['title', 'platform__name']
 
 class WatchListView(APIView):
     permission_classes = [IsAdminOrReadOnly]
